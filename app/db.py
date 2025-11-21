@@ -7,7 +7,7 @@ sqlite_url = "sqlite:///./habitos.db"
 
 # echo=True hace que se vean las sentencias SQL en consola (útil para aprender)
 engine = create_engine(sqlite_url, echo=True)
-
+from app.models.habito import Habito, HabitLog  # noqa: F401
 
 def create_db_and_tables() -> None:
     """
