@@ -4,7 +4,7 @@ from typing import Optional
 from sqlmodel import SQLModel, Field
 
 
-class Habito(SQLModel, table=True):
+class Habit(SQLModel, table=True):
     """
     Hábito que pertenece a un usuario.
     Ejemplo: "leer 20 minutos", "hacer ejercicio", etc.
