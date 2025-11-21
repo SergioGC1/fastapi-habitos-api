@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel, create_engine, Session
 
 # URL de conexión a SQLite
-sqlite_url = "sqlite:///./habits.db"
+sqlite_url = "sqlite:///./habitos.db"
 
 # echo=True hace que se vean las sentencias SQL en consola (útil para aprender)
 engine = create_engine(sqlite_url, echo=True)
