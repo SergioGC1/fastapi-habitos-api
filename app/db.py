@@ -1,5 +1,7 @@
 from sqlmodel import SQLModel, create_engine, Session
 
+from app.models.user import User # noqa: F401
+
 # URL de conexión a SQLite
 sqlite_url = "sqlite:///./habitos.db"
 
