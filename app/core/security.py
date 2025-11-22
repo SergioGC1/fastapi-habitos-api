@@ -1,25 +1,26 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from passlib.context import CryptContext
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session
 
 from app.db import get_session
 from app.models.user import User
 
 # ⚠️ En un proyecto real esto iría en variables de entorno (.env)
-SECRET_KEY = "clave-secreta"
+SECRET_KEY = "super-clave-secreta-que-luego-cambiaremos"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-# Esquema OAuth2 para leer el token del header Authorization: Bearer <token>
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+# Esquema HTTP Bearer simple (Authorization: Bearer <token>)
+bearer_scheme = HTTPBearer()
 
 # Hash de contraseñas
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+
 
 def get_password_hash(password: str) -> str:
     """
@@ -51,8 +52,9 @@ def create_access_token(
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
 def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
     session: Session = Depends(get_session),
 ) -> User:
     """
@@ -64,6 +66,8 @@ def get_current_user(
         detail="No se pudieron validar las credenciales",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
+    token = credentials.credentials
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
